@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class BookingDataManager(
     private val bookingService: BookingService,
-    private val bookingCache: BookingCache = BookingCache()
+    private val bookingCache: BookingCache
 ) {
     private val TAG = "【BookingDataManager】"
     private val coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())

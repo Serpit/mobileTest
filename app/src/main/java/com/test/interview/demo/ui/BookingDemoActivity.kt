@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import com.test.interview.demo.data.BookingDataManager
+import com.test.interview.demo.data.cache.BookingCache
 import com.test.interview.demo.data.service.MockBookingService
 import kotlinx.coroutines.launch
 
@@ -16,7 +17,10 @@ class BookingDemoActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         
         // 初始化数据管理器
-        bookingDataManager = BookingDataManager(MockBookingService(this))
+        bookingDataManager = BookingDataManager(
+            bookingService = MockBookingService(this),
+            bookingCache = BookingCache(this)
+        )
         
         // 监听数据流，自动打印数据变化
         lifecycleScope.launch {
