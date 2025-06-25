@@ -18,6 +18,9 @@ class BookingDataManager(
     private val _bookingData = MutableStateFlow<Result<BookingResponse>?>(null)
     val bookingData: StateFlow<Result<BookingResponse>?> = _bookingData.asStateFlow()
 
+    // 首次拉取标记
+    private var firstFetchDone = false
+
     init {
         // 启动自动刷新机制
         startAutoRefresh()
@@ -26,7 +29,7 @@ class BookingDataManager(
     private fun startAutoRefresh() {
         coroutineScope.launch {
             while (isActive) {
-                if (bookingCache.isExpired()) {
+                if (firstFetchDone && bookingCache.isExpired()) {
                     refreshData()
                 }
                 delay(30000) // 每30秒检查一次是否需要刷新
@@ -42,7 +45,9 @@ class BookingDataManager(
         }
 
         // 2. 如果没有缓存数据，从服务器获取
-        return refreshData()
+        val result = refreshData()
+        firstFetchDone = true
+        return result
     }
 
     private suspend fun refreshData(): Result<BookingResponse> {
